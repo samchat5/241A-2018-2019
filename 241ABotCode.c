@@ -1,3 +1,5 @@
+#pragma config(Sensor, in1,    powerex,        sensorAnalog)
+#pragma config(UART_Usage, UART2, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(Motor,  port2,           R1,            tmotorVex393_MC29, openLoop, reversed, encoderPort, None)
 #pragma config(Motor,  port3,           R2,            tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           L1,            tmotorVex393_MC29, openLoop, encoderPort, None)
@@ -10,14 +12,33 @@
 #pragma userControlDuration(150)
 #include "VEX_Competition_Includes.c"
 
-void pre_auton ()
-{
+void pre_auton(){
 }
 task autonomous ()
 {
 }
 task usercontrol()
 {
+	//This whole block is dedicated to displaying the Battery Voltage on the LCD Display
+	bLCDBacklight = true;									// Turn on LCD Backlight
+	string mainBattery;
+	string secondaryBattery;
+	clearLCDLine(0);											// Clear line 1 (0) of the LCD
+	clearLCDLine(1);											// Clear line 2 (1) of the LCD
+
+	//Display the Primary Robot battery voltage
+	displayLCDString(0, 0, "Primary: ");
+	sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V'); //Build the value to be displayed
+	displayNextLCDString(mainBattery);
+
+	//Display the Secondary Robot battery voltage
+	displayLCDString(1, 0, "Secondary: ");
+	sprintf(secondaryBattery, "%1.2f%c", SensorValue(powerex)/270, 'V');
+	displayNextLCDString(secondaryBattery);
+
+	//Short delay for the LCD refresh rate
+	wait1Msec(100);
+
 	while (1==1){
 		//Right joystick controls right wheels
 		motor[R1] = vexRT[Ch2]*0.8;
