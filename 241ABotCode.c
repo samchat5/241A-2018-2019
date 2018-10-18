@@ -42,11 +42,11 @@ task usercontrol()
 
 	while (1==1){
 		//Right joystick controls right wheels
-		motor[R1] = vexRT[Ch2]*0.7;
-		motor[R2] = vexRT[Ch2]*0.7;
+		motor[R1] = vexRT[Ch2]*0.5;
+		motor[R2] = vexRT[Ch2]*0.5;
 		//Left joystick controls left wheels
-		motor[L1] = vexRT[Ch3]*0.7;
-    motor[L2] = vexRT[Ch3]*0.7;
+		motor[L1] = vexRT[Ch3]*0.5;
+    motor[L2] = vexRT[Ch3]*0.5;
 
     if(vexRT[Btn6U]){
     	motor[Tower1] = 100;
@@ -61,7 +61,7 @@ task usercontrol()
     	motor[Tower2] = 0;
     }
 
-    //Sending 70% power to prevent overheating in the motors
+    //Sending 50% power to prevent overheating in the motors
 
 		if(vexRT[Btn8D]){
 			startTask(autonomous);
