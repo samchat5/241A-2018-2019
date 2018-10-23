@@ -1,4 +1,5 @@
 #pragma config(Sensor, in1,    powerex,        sensorNone)
+#pragma config(Sensor, in2,    Poten,          sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  REncoder,       sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  LEncoder,       sensorQuadEncoder)
 #pragma config(Motor,  port2,           R1,            tmotorVex393_MC29, openLoop, reversed, encoderPort, None)
@@ -106,11 +107,11 @@ task usercontrol()
 		motor[L1] = vexRT[Ch3]*0.5;
     motor[L2] = vexRT[Ch3]*0.5;
 
-    if(vexRT[Btn6U]){
+    if(vexRT[Btn6U] && SensorValue[Poten] < 4000){
     	motor[Tower1] = 100;
     	motor[Tower2] = 100;
     }
-    else if(vexRT[Btn6D]){
+    else if(vexRT[Btn6D] & SensorValue[Poten] > 2150){
     	motor[Tower1] = -100;
     	motor[Tower2] = -100;
     }
