@@ -21,14 +21,10 @@ void move(int ticks){
 	SensorValue[REncoder] = 0;
 	SensorValue[LEncoder] = 0;
 	while(SensorValue[LEncoder] <= ticks && SensorValue[REncoder] <= ticks){
-		if(SensorValue[LEncoder] <= ticks){
-			motor[L1] = 127;
-			motor[L2] = 127;
-		}
-		if(SensorValue[REncoder] <= ticks){
-			motor[R1] = 127;
-			motor[R2] = 127;
-		}
+		motor[L1] = 127;
+		motor[L2] = 127;
+		motor[R1] = 127;
+		motor[R2] = 127;
 	}
 	motor[L1] = 0;
 	motor[L2] = 0;
@@ -75,7 +71,7 @@ void pre_auton(){
 }
 task autonomous ()
 {
-	move(200);
+	move(500);
 }
 task usercontrol()
 {
