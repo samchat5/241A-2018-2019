@@ -18,24 +18,12 @@
 #pragma userControlDuration(150)
 #include "VEX_Competition_Includes.c"
 
-void move(int ticks){
-	SensorValue[REncoder] = 0;
-	SensorValue[LEncoder] = 0;
-	while(SensorValue[LEncoder] <= ticks && SensorValue[REncoder] <= ticks){
-		motor[L1] = 127;
-		motor[L2] = 127;
-		motor[R1] = 127;
-		motor[R2] = 127;
-	}
-	motor[L1] = 0;
-	motor[L2] = 0;
-	motor[R1] = 0;
-	motor[R2] = 0;
-}
+int oneInch = 360/(3.5*3.14);
+
 void moveBack(int ticks){
 	SensorValue[REncoder] = 0;
 	SensorValue[LEncoder] = 0;
-	while(SensorValue[LEncoder] >= -1*ticks && SensorValue[REncoder] >= -1*ticks){
+	while(SensorValue[LEncoder] <= ticks && SensorValue[REncoder] <= ticks){
 		if(SensorValue[LEncoder] <= ticks){
 			motor[L1] = -127;
 			motor[L2] = -127;
@@ -50,11 +38,29 @@ void moveBack(int ticks){
 	motor[R1] = 0;
 	motor[R2] = 0;
 }
-void spinLeft(int ticks){
+void move(int ticks){
 	SensorValue[REncoder] = 0;
 	SensorValue[LEncoder] = 0;
-	while(SensorValue[LEncoder] <= ticks && SensorValue[REncoder] >= -1*ticks){
-		if(SensorValue[LEncoder] <= ticks){
+	while(SensorValue[LEncoder] >= -1*ticks && SensorValue[REncoder] >= -1*ticks){
+		if(SensorValue[LEncoder] >= -1*ticks){
+			motor[L1] = 127;
+			motor[L2] = 127;
+		}
+		if(SensorValue[REncoder] >= -1*ticks){
+			motor[R1] = 127;
+			motor[R2] = 127;
+		}
+	}
+	motor[L1] = 0;
+	motor[L2] = 0;
+	motor[R1] = 0;
+	motor[R2] = 0;
+}
+void spinRight(int ticks){
+	SensorValue[REncoder] = 0;
+	SensorValue[LEncoder] = 0;
+	while(SensorValue[LEncoder] >= -1*ticks && SensorValue[REncoder] <= ticks){
+		if(SensorValue[LEncoder] >= -1*ticks){
 			motor[L1] = 127;
 			motor[L2] = 127;
 		}
@@ -72,7 +78,9 @@ void pre_auton(){
 }
 task autonomous ()
 {
-	move(500);
+	move(oneInch * (140.5/6));
+	spinRight(600);
+	moveBack(800);
 }
 task usercontrol()
 {
@@ -136,6 +144,8 @@ task usercontrol()
 
 		if(vexRT[Btn8D]){
 			startTask(autonomous);
+			wait1Msec(6000);
+			stopTask(autonomous);
 		}
 		/* press the bottom button of the right buttons to
 		start the autonomous*/
