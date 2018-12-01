@@ -78,9 +78,9 @@ void pre_auton(){
 }
 task autonomous ()
 {
-	move(oneInch * (140.5/6));
+	move(500);
 	spinRight(600);
-	moveBack(2500);
+	moveBack(1500);
 }
 task usercontrol()
 {
@@ -118,7 +118,7 @@ task usercontrol()
     	motor[Tower1] = 100;
     	motor[Tower2] = 100;
     }
-    else if(vexRT[Btn5D] & SensorValue[Poten] > 30){
+    else if(vexRT[Btn6U] & SensorValue[Poten] > 70){
     	motor[Tower1] = -100;
     	motor[Tower2] = -100;
     }
