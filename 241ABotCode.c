@@ -18,7 +18,8 @@
 #pragma userControlDuration(150)
 #include "VEX_Competition_Includes.c"
 
-int oneInch = 360/(3.5*3.14);
+float in = 360/(3.14159265358979*4);
+float c = 25.4558441227*3.14159265358979;
 
 void moveBack(int ticks){
 	SensorValue[REncoder] = 0;
@@ -78,9 +79,9 @@ void pre_auton(){
 }
 task autonomous ()
 {
-	move(500);
-	spinRight(600);
-	moveBack(1500);
+	move(23*in);
+	spinRight(0.25*c*in);
+	moveBack(39*in);
 }
 task usercontrol()
 {
