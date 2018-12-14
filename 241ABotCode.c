@@ -1,6 +1,7 @@
 #pragma config(Sensor, in1,    powerex,        sensorAnalog)
 #pragma config(Sensor, in2,    Poten,          sensorPotentiometer)
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
+#pragma config(Sensor, in4,    ClawPoten,      sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  REncoder,       sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  LEncoder,       sensorQuadEncoder)
 #pragma config(Motor,  port2,           R1,            tmotorVex393_MC29, openLoop, reversed, encoderPort, None)
@@ -76,8 +77,9 @@ void pre_auton(){
 task autonomous ()
 {
 	wait1Msec(1200);
+	moveBack(37*in);
 	shoot();
-	move(50*in);
+
 }
 task usercontrol()
 {
@@ -127,13 +129,27 @@ task usercontrol()
   	if(vexRT[Btn7U]){
   		motor[Claw] = 100;
   	}
-  	else if(vexRT[Btn8U]){
+  	else{
+  		motor[Claw] = 0;
+  	}
+  	if(vexRT[Btn8U] && SensorValue[ClawPoten] < 1500){
   		motor[Claw] = -100;
   	}
   	else{
   		motor[Claw] = 0;
   	}
-
+  	if(vexRT[Btn7D]){
+  		motor[Claw] = -100;
+  	}
+  	else{
+  		motor[Claw] = 0;
+  	}
+  	if(vexRT[Btn7L]){
+  		motor[launcher]=127;
+  	}
+  	else{
+  		motor[launcher] = 0;
+  	}
 		if(vexRT[Btn8D]){
 			startTask(autonomous);
 			wait1Msec(6000);
