@@ -113,42 +113,50 @@ task usercontrol()
 
 		//Sending 50% power to prevent overheating in the motors
 
-    if(vexRT[Btn5U] && SensorValue[Poten] < 2050){
-    	motor[Tower1] = 100;
-    	motor[Tower2] = 100;
-    }
-    else if(vexRT[Btn6U] & SensorValue[Poten] > 70){
-    	motor[Tower1] = -100;
-    	motor[Tower2] = -100;
+    if(vexRT[Btn5U]){
+    	while(SensorValue[Poten] < 2000){
+    		motor[Tower1] = 100;
+    		motor[Tower2] = 100;
+    	}
+    	motor[Tower1] = 0;
+    	motor[Tower2] = 0;
     }
     else{
     	motor[Tower1] = 0;
     	motor[Tower2] = 0;
-  	}
-
+    }
+   	if(vexRT[Btn6U]){
+    	while(SensorValue[Poten] > 250){
+    		motor[Tower1] = -100;
+    		motor[Tower2] = -100;
+    	}
+    	motor[Tower1] = 0;
+    	motor[Tower2] = 0;
+    }
+    else{
+    	motor[Tower1] = 0;
+    	motor[Tower2] = 0;
+    }
   	if(vexRT[Btn7U]){
-  		motor[Claw] = 100;
+  		motor[Claw] = 127;
   	}
   	else{
   		motor[Claw] = 0;
   	}
-  	if(vexRT[Btn8U] && SensorValue[ClawPoten] < 1500){
-  		motor[Claw] = -100;
-  	}
-  	else{
-  		motor[Claw] = 0;
-  	}
+		if(vexRT[Btn8U]){
+			while(SensorValue[ClawPoten] < 1350){
+				motor[Claw] = -127;
+			}
+			motor[Claw] = 0;
+		}
+		else{
+			motor[Claw] = 0;
+		}
   	if(vexRT[Btn7D]){
-  		motor[Claw] = -100;
+  		motor[Claw] = -127;
   	}
   	else{
   		motor[Claw] = 0;
-  	}
-  	if(vexRT[Btn7L]){
-  		motor[launcher]=127;
-  	}
-  	else{
-  		motor[launcher] = 0;
   	}
 		if(vexRT[Btn8D]){
 			startTask(autonomous);
