@@ -3,7 +3,7 @@
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
 #pragma config(Sensor, dgtl1,  REncoder,       sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  LEncoder,       sensorQuadEncoder)
-#pragma config(Motor,  port1,           cata1,         tmotorVex393_HBridge, openLoop)
+#pragma config(Motor,  port1,           cata1,         tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           R1,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           R2,            tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port4,           L1,            tmotorVex393HighSpeed_MC29, openLoop)
@@ -23,12 +23,12 @@ float in = 360/(3.14159265358979*4);
 void moveBack(int ticks){
 	SensorValue[REncoder] = 0;
 	SensorValue[LEncoder] = 0;
-	while(SensorValue[LEncoder] <= ticks && SensorValue[REncoder] <= ticks){
-		if(SensorValue[LEncoder] <= ticks){
+	while(SensorValue[LEncoder] >= -1*ticks && SensorValue[REncoder] >= -1*ticks){
+		if(SensorValue[LEncoder] >= -1*ticks){
 			motor[L1] = -127;
 			motor[L2] = -127;
 		}
-		if(SensorValue[REncoder] <= ticks){
+		if(SensorValue[REncoder] >= -1*ticks){
 			motor[R1] = -127;
 			motor[R2] = -127;
 		}
@@ -41,12 +41,12 @@ void moveBack(int ticks){
 void move(int ticks){
 	SensorValue[REncoder] = 0;
 	SensorValue[LEncoder] = 0;
-	while(SensorValue[LEncoder] >= -1*ticks && SensorValue[REncoder] >= -1*ticks){
-		if(SensorValue[LEncoder] >= -1*ticks){
+	while(SensorValue[LEncoder] <= ticks && SensorValue[REncoder] <= ticks){
+		if(SensorValue[LEncoder] <= ticks){
 			motor[L1] = 127;
 			motor[L2] = 127;
 		}
-		if(SensorValue[REncoder] >= -1*ticks){
+		if(SensorValue[REncoder] <= ticks){
 			motor[R1] = 127;
 			motor[R2] = 127;
 		}
@@ -83,39 +83,43 @@ void spinLeft(int deg10){
 void shoot(){
 	motor[cata1] = 100;
 	motor[cata2] = 100;
-	wait(1000);
+	wait1msec(200);
 	motor[cata1] = 0;
 	motor[cata2] = 0;
 }
+
 void pre_auton(){
 }
 task autonomous ()
 {
-
-	//RED SIDE - Auto 1 -----------------------------------------------------
+	//BLUE SIDE - Auto 1 -----------------------------------------------------
 
 	//Step 1: Turn on intake and drive forward
-	intakeOn();
-	move(500);
+	//intakeOn();
+	//move(1500);
 	//Step 2: Turn off intake and drive back same amount
-	intakeOff();
-	moveBack(500);
+	//intakeOff();
+	//moveBack(1500);
 	//Step 3: Turn 90deg left
-	spinLeft(900);
+	//spinLeft(900);
 	//Step 4: Move forward slightly
-	move(100);
+	moveBack(1900);
+	wait1Msec(400);
 	//Step 5: Shoot catapult
 	shoot();
 	//Step 6: Drive forward to hit low flag
-	move(400);
+	moveBack(400);
+	wait1Msec(200);
 	//Step 7: Move back slightly
-	moveBack(200);
+	move(500);
 	//Step 8: Turn right 45deg
-	spinRight(450);
+	//spinRight(450);
 	//Step 9: Move forward
-	move(350);
+	//move(350);
 
-	//Skills Auto-------------------------------------------------------
+
+
+/*	//Skills Auto-------------------------------------------------------
 
 	//Step 1: Turn on intake and drive forward
 	intakeOn();
@@ -141,7 +145,7 @@ task autonomous ()
 	spinLeft(450);
 	//Step 11: Forward
 	move(300);
-
+*/
 }
 task usercontrol()
 {
@@ -167,14 +171,18 @@ task usercontrol()
 
 	while (1==1){
 		//Right joystick controls right wheels
-		motor[R1] = vexRT[Ch2]*0.5;
-		motor[R2] = vexRT[Ch2]*0.5;
+		motor[R1] = vexRT[Ch3]*-0.5;
+		motor[R2] = vexRT[Ch3]*-0.5;
 		//Left joystick controls left wheels
-		motor[L1] = vexRT[Ch3]*0.5;
-    motor[L2] = vexRT[Ch3]*0.5;
+		motor[L1] = vexRT[Ch2]*-0.5;
+    motor[L2] = vexRT[Ch2]*-0.5;
 		//Sending 50% power to prevent overheating in the motors
 
-    if(vexRT[Btn6U] && SensorValue[taylorsstoned] > 100){
+    if(vexRT[Btn6U] && SensorValue[taylorsstoned] > 3700){
+			motor[cata1] = 100;
+			motor[cata2] = 100;
+		}
+		else if(vexRT[Btn6D]){
 			motor[cata1] = 100;
 			motor[cata2] = 100;
 		}
@@ -182,31 +190,16 @@ task usercontrol()
 			motor[cata1] = 0;
 			motor[cata2] = 0;
 		}
-
-		if(vexRT[Btn6D]){
-			motor[cata1] = 100;
-			motor[cata2] = 100;
-		}
-		else{
-			motor[cata1] = 0;
-			motor[cata2] = 0;
-		}
-
-		if(vexRT[Btn5U]){
-			motor[intake] = 100;
-		}
-		else{
-			motor[intake] = 0;
-		}
-
-		if(vexRT[Btn5U]){
-			motor[intake] = 100;
-		}
-		else{
-			motor[intake] = 0;
-		}
-
 		if(vexRT[Btn5D]){
+			motor[intake] = -100;
+		}
+		else if(vexRT[Btn5U]){
+			motor[intake] = 100;
+		}
+		else{
+			motor[intake] = 0;
+		}
+		if(vexRT[Btn8D]){
 			startTask(autonomous);
 			wait1Msec(6000);
 			stopTask(autonomous);
